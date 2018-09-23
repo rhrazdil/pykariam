@@ -1,11 +1,13 @@
 # coding=utf-8
 
-from utils.login import Login
-from utils.driver import Driver
-from utils import conf
-from utils.navigator import Navigator
 from models.pirate_fortress import PirateFortress
 from models.tavern import Tavern
+from time import sleep
+from utils import conf
+from utils.driver import Driver
+from utils.login import Login
+from utils.navigator import Navigator
+
 
 navigator = Navigator().navigator()
 
@@ -19,5 +21,10 @@ Login().log_in()
 
 tavern = Tavern()
 tavern.set_max_consumption()
+
+pirate_fortress = PirateFortress()
+pirate_fortress.launch_raid()
+
+sleep(5)
 # close the browser window
 driver.quit()
