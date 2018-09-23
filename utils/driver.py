@@ -22,7 +22,7 @@ class Driver(metaclass=MetaClassSingleton):
     Driver class decorated by the meta class: MetaClassSingleton.
     Behaviour changed in singleton
     """
-    connection = None
+    instance = None
 
     def connect(self):
         """
@@ -31,7 +31,7 @@ class Driver(metaclass=MetaClassSingleton):
         Returns:
              self.driver: web driver
         """
-        if self.connection is None:
-            self.connection = webdriver.Chrome()
+        if self.instance is None:
+            self.instance = webdriver.Chrome()
 
-        return self.connection
+        return self.instance

@@ -16,7 +16,8 @@ class Login(object):
         self.driver.find_element_by_id('btn-login').click()
 
         logserver_select = Select(self.driver.find_element_by_id(
-            conf.logserver_field_id))
+            conf.logserver_field_id)
+        )
         username_input = self.driver.find_element_by_id(conf.username_field_id)
         password_input = self.driver.find_element_by_id(conf.password_field_id)
         submit_button = self.driver.find_element_by_id(conf.login_button_id)
@@ -37,6 +38,6 @@ class Login(object):
             )
             return True
         except:
-            print("[ERROR] Timeout occured while waiting for log in.")
+            print("[ERROR] Timeout occurred while waiting for log in.")
             self.driver.save_screenshot('logging-in-err.png')
             return False

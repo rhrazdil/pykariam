@@ -22,7 +22,7 @@ class Navigator(metaclass=MetaClassSingleton):
     Driver class decorated by the meta class: MetaClassSingleton.
     Behaviour changed in singleton
     """
-    singleton = None
+    instance = None
 
     def navigator(self):
         """
@@ -31,7 +31,7 @@ class Navigator(metaclass=MetaClassSingleton):
         Returns:
              self.driver: web driver
         """
-        if self.singleton is None:
-            self.singleton = Navigate()
+        if self.instance is None:
+            self.instance = Navigate()
 
-        return self.singleton
+        return self.instance
