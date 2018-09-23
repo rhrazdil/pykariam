@@ -1,19 +1,17 @@
 # coding=utf-8
 
-from selenium import webdriver
 from login import Login
-
+from utils.driver import Driver
 import conf
 
-driver = webdriver.Chrome()
+driver = Driver().connect()
 driver.implicitly_wait(10)
 driver.maximize_window()
 
-# navigate to the application home page
+# navigate to the application home page and log in
 driver.get(conf.site_url)
+Login().log_in()
 
-login = Login(driver)
-login.log_in()
 
 # close the browser window
 driver.quit()

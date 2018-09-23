@@ -4,11 +4,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
+from utils.driver import Driver
 
 
 class Login(object):
-    def __init__(self, driver):
-        self.driver = driver
+    def __init__(self):
+        self.driver = Driver().connect()
 
     def log_in(self):
         # first open div containing fields for logging in
@@ -35,6 +36,6 @@ class Login(object):
             )
             return True
         except:
-            print "[ERROR] Timeout occured while waiting for log in."
+            print("[ERROR] Timeout occured while waiting for log in.")
             self.driver.save_screenshot('logging-in-err.png')
             return False
