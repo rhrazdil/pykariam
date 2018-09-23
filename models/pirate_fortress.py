@@ -1,12 +1,23 @@
-from navmazing import Navigate, NavigateStep, NavigateToSibling
+from navmazing import NavigateStep, NavigateToSibling
 from utils.ui import click
+from utils.navigator import Navigator
 
-navigator = Navigate()
+navigator = Navigator().navigator()
 
 
 class PirateFortress(object):
     def __init__(self):
+        self.name = 'test'
         self.id = 'js_CityPosition17Link'
+
+    def raid(self):
+        click('//*[@id="pirateCaptureBox"]/div[1]/table/tbody/tr[1]/td[5]/a',
+              sel_type='xpath')
+
+    def crew
+
+    def farm_raids(self):
+
 
 
 @navigator.register(PirateFortress, 'Raid')
@@ -25,7 +36,7 @@ class PirateFortressCrewStrength(NavigateStep):
         click('js_tabCrew')
 
 
-@navigator.register(PirateFortress, 'Overview')
+@navigator.register(PirateFortress, 'All')
 class PirateFortressOveriew(NavigateStep):
     def am_i_here(self):
         return False

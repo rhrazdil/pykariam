@@ -1,4 +1,4 @@
-import conf
+from utils import conf
 import credentials
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -15,7 +15,8 @@ class Login(object):
         # first open div containing fields for logging in
         self.driver.find_element_by_id('btn-login').click()
 
-        logserver_select = Select(self.driver.find_element_by_id(conf.logserver_field_id))
+        logserver_select = Select(self.driver.find_element_by_id(
+            conf.logserver_field_id))
         username_input = self.driver.find_element_by_id(conf.username_field_id)
         password_input = self.driver.find_element_by_id(conf.password_field_id)
         submit_button = self.driver.find_element_by_id(conf.login_button_id)
