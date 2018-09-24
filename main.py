@@ -19,11 +19,7 @@ driver.maximize_window()
 driver.get(conf.site_url)
 Login().log_in()
 
-tavern = Tavern()
-tavern.set_max_consumption()
 
-pirate_fortress = PirateFortress()
-pirate_fortress.launch_raid()
 
 sleep(5)
 # close the browser window

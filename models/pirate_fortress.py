@@ -1,6 +1,7 @@
 from navmazing import NavigateStep, NavigateToSibling
-from utils.ui import click, element_text, element_fill, main_box_header_title
+from utils.ui import click, element_fill, element, is_element_present
 from utils.navigator import Navigator
+from utils.captcha import Captcha
 
 navigator = Navigator().navigator()
 
@@ -9,8 +10,9 @@ class PirateFortress(object):
     def __init__(self):
         self.name = 'Pirate Fortress'
         self.id = 'js_CityPosition17Link'  # TODO: figure building positions automagically
+        self.captcha_filename = 'captcha.png'
 
-    def launch_raid(self):
+    def raid(self):
         navigator.navigate(self, 'Raid')
         click('//*[@id="pirateCaptureBox"]/div[1]/table/tbody/tr[1]/td[5]/a',
               sel_type='xpath')
@@ -19,6 +21,31 @@ class PirateFortress(object):
         navigator.navigate(self, 'CrewStrength')
         element_fill(selection='CPToCrewInput', content=amount)
         click('CPToCrewSubmit')
+
+    @staticmethod
+    def is_captcha_displayed():
+        return is_element_present('captcha')
+
+    @staticmethod
+    def get_captcha_png():
+        captcha = element('//*[@id="pirateCaptureBox"]/div[1]/form/img[@src]',
+                          'xpath')
+        return captcha.screenshot_as_png
+
+    def submit_captcha(self):
+        # First find solution from image
+        captcha_solver = Captcha(self.get_captcha_png())
+        solution = captcha_solver.solve()
+
+        # Fill captcha text field with found solution
+        captcha_field = element('captcha')
+        captcha_field.send_keys(solution)
+
+        # Submit solution
+        element(
+            '#pirateCaptureBox > div.content > form > div.centerButton > input',
+            'css'
+        ).click()
 
 
 @navigator.register(PirateFortress, 'Raid')

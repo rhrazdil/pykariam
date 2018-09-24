@@ -1,3 +1,4 @@
 selenium
 navmazing
 pyyaml
+twocaptchaapi

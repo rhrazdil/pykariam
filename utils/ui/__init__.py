@@ -5,7 +5,7 @@ UI utility methods
 from utils.driver import Driver
 import time
 import random
-
+from selenium.common.exceptions import NoSuchElementException
 
 def get_selector_method(sel_type):
     driver = Driver().connect()
@@ -71,3 +71,16 @@ def element_fill(selection, content, sel_type='id'):
 
 def main_box_header_title():
     return element_text('#js_mainBoxHeaderTitle', sel_type='css')
+
+
+# TODO: Always use this method for checking element presence!!! (performance)
+def is_element_present(selection, sel_type='id'):
+    driver = Driver().connect()
+    driver.implicitly_wait(0)
+    try:
+        element(selection, sel_type)
+        return True
+    except NoSuchElementException:
+        return False
+    finally:
+        driver.implicitly_wait(10)
