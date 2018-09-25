@@ -1,20 +1,43 @@
 from navmazing import NavigateStep, NavigateToSibling
-from utils.ui import click, element_fill, element, is_element_present
+from utils.ui import click, element_fill, element, element_text, is_element_present
 from utils.navigator import Navigator
 from utils.captcha import Captcha
+from utils.strings import Strings
+from selenium.common.exceptions import NoSuchElementException
+
 
 navigator = Navigator().navigator()
+strings = Strings('czech')
 
 
 class PirateFortress(object):
     def __init__(self):
-        self.name = 'Pirate Fortress'
+        self.name = strings['pirate_fortress']
         self.id = 'js_CityPosition17Link'  # TODO: figure building positions automagically
         self.captcha_filename = 'captcha.png'
+        self.captcha_attempts = 3
 
     def raid(self):
-        click('//*[@id="pirateCaptureBox"]/div[1]/table/tbody/tr[1]/td[5]/a',
-              sel_type='xpath')
+        navigator.navigate(self, 'Raid')
+
+        try:
+            click('//*[@id="pirateCaptureBox"]/div[1]/table/tbody/tr[1]/td[5]/a',
+                  sel_type='xpath')
+        except NoSuchElementException as e:
+            if self.is_captcha_displayed():
+                pass
+            else:
+                raise
+        except Exception as e:
+            print("ERROR:", e)
+
+        attempts = self.captcha_attempts
+        while self.is_captcha_displayed() and attempts > 0:
+            try:
+                self.submit_captcha()
+            except Exception as e:
+                print(e)
+            attempts -= 1
 
     def add_crew_strength(self, amount):
         navigator.navigate(self, 'CrewStrength')
@@ -73,7 +96,11 @@ class PirateFortressCrewStrength(NavigateStep):
 @navigator.register(PirateFortress, 'All')
 class PirateFortressOverview(NavigateStep):
     def am_i_here(self):
-        return False
+        title_id = 'js_mainBoxHeaderTitle'
+        if is_element_present(title_id) and element_text(title_id) == self.obj.name:
+            return True
+        else:
+            return False
 
     def step(self):
         click('js_cityLink')

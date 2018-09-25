@@ -23,7 +23,7 @@ def get_selector_method(sel_type):
 
 
 def click(selection, sel_type='id'):
-    time.sleep(random.randint(1,5))  # sleep between 1 - 5 sec to mimic human
+    time.sleep(random.randint(1,5))  # sleep between 1 - 5 sec to mimic human behaviour
     selector = get_selector_method(sel_type)
     selector(selection).click()
 
