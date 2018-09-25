@@ -24,8 +24,7 @@ def get_selector_method(sel_type):
 
 def click(selection, sel_type='id'):
     time.sleep(random.randint(1,3))  # sleep between 1 - 5 sec to mimic human behaviour
-    selector = get_selector_method(sel_type)
-    selector(selection).click()
+    element(selection, sel_type).click()
     time.sleep(1) # wait for page reload
 
 

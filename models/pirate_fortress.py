@@ -75,10 +75,8 @@ class PirateFortress(object):
 
         # Submit solution
         click(
-            element(
-                '#pirateCaptureBox > div.content > form > div.centerButton > input',
-                'css'
-            )
+            '#pirateCaptureBox > div.content > form > div.centerButton > input',
+            'css'
         )
 
 
