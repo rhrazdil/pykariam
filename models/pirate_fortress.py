@@ -4,7 +4,7 @@ from utils.navigator import Navigator
 from utils.captcha import Captcha
 from utils.strings import Strings
 from selenium.common.exceptions import NoSuchElementException
-
+from time import sleep
 
 navigator = Navigator().navigator()
 strings = Strings('czech')
@@ -19,13 +19,12 @@ class PirateFortress(object):
 
     def raid(self):
         navigator.navigate(self, 'Raid')
-
         try:
             click('//*[@id="pirateCaptureBox"]/div[1]/table/tbody/tr[1]/td[5]/a',
                   sel_type='xpath')
         except NoSuchElementException as e:
             if self.is_captcha_displayed():
-                pass
+                print("captcha occured!")
             else:
                 raise
         except Exception as e:
@@ -34,10 +33,12 @@ class PirateFortress(object):
         attempts = self.captcha_attempts
         while self.is_captcha_displayed() and attempts > 0:
             try:
+                print("trying to solve!")
                 self.submit_captcha()
             except Exception as e:
                 print(e)
             attempts -= 1
+
 
     def add_crew_strength(self, amount):
         navigator.navigate(self, 'CrewStrength')
@@ -50,8 +51,10 @@ class PirateFortress(object):
 
     @staticmethod
     def get_captcha_png():
-        captcha = element('//*[@id="pirateCaptureBox"]/div[1]/form/img[@src]',
-                          'xpath')
+        captcha = element(
+            '//*[@id="pirateCaptureBox"]/div[1]/form/img[@src]',
+            'xpath'
+        )
         return captcha.screenshot_as_png
 
     def save_image_to_file(self, image):
@@ -71,10 +74,12 @@ class PirateFortress(object):
         captcha_field.send_keys(solution)
 
         # Submit solution
-        element(
-            '#pirateCaptureBox > div.content > form > div.centerButton > input',
-            'css'
-        ).click()
+        click(
+            element(
+                '#pirateCaptureBox > div.content > form > div.centerButton > input',
+                'css'
+            )
+        )
 
 
 @navigator.register(PirateFortress, 'Raid')
