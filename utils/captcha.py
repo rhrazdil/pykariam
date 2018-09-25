@@ -3,10 +3,10 @@ from credentials import twocaptcha_api_key
 
 
 class Captcha(object):
-    def __init__(self, captcha_png):
-        self.captcha_png = captcha_png
+    def __init__(self, captcha):
+        self.captcha = captcha
         self.api = TwoCaptchaApi(twocaptcha_api_key)
 
     def solve(self):
-        captcha = self.api.solve(self.captcha_png)
+        captcha = self.api.solve(self.captcha)
         return captcha.await_result()

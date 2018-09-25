@@ -13,7 +13,6 @@ class PirateFortress(object):
         self.captcha_filename = 'captcha.png'
 
     def raid(self):
-        navigator.navigate(self, 'Raid')
         click('//*[@id="pirateCaptureBox"]/div[1]/table/tbody/tr[1]/td[5]/a',
               sel_type='xpath')
 
@@ -32,9 +31,16 @@ class PirateFortress(object):
                           'xpath')
         return captcha.screenshot_as_png
 
+    def save_image_to_file(self, image):
+        with open(self.captcha_filename, 'wb') as file:
+            file.write(image)
+
     def submit_captcha(self):
+        # Save captcha image
+        self.save_image_to_file(self.get_captcha_png())
+
         # First find solution from image
-        captcha_solver = Captcha(self.get_captcha_png())
+        captcha_solver = Captcha(self.captcha_filename)
         solution = captcha_solver.solve()
 
         # Fill captcha text field with found solution
