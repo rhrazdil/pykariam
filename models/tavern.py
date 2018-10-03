@@ -30,6 +30,7 @@ class Tavern(object):
             'css'
         )
 
+
 @navigator.register(Tavern, 'All')
 class TavernOverview(NavigateStep):
     def am_i_here(self):

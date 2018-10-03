@@ -4,10 +4,15 @@ from utils.navigator import Navigator
 from utils.captcha import Captcha
 from utils.strings import Strings
 from selenium.common.exceptions import NoSuchElementException
-from time import sleep
+from conf import language
+from utils.login import Login
+import logging.config
+
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger('PYKARIAM')
 
 navigator = Navigator().navigator()
-strings = Strings('czech')
+strings = Strings(language)
 
 
 class PirateFortress(object):
@@ -16,29 +21,37 @@ class PirateFortress(object):
         self.id = 'js_CityPosition17Link'  # TODO: figure building positions automagically
         self.captcha_filename = 'captcha.png'
         self.captcha_attempts = 3
+        self.raid_button_selector = '//*[@id="pirateCaptureBox"]/div[1]/table/tbody/tr[1]/td[5]/a'
 
     def raid(self):
-        navigator.navigate(self, 'Raid')
+        navigator.navigate(self, 'All')
         try:
-            click('//*[@id="pirateCaptureBox"]/div[1]/table/tbody/tr[1]/td[5]/a',
+            click(self.raid_button_selector,
                   sel_type='xpath')
         except NoSuchElementException as e:
             if self.is_captcha_displayed():
-                print("captcha occured!")
+                logger.info('Captcha encontered')
             else:
-                raise
+                raise e
         except Exception as e:
-            print("ERROR:", e)
+            logging.error(e)
 
         attempts = self.captcha_attempts
         while self.is_captcha_displayed() and attempts > 0:
+            solution = ''
             try:
-                print("trying to solve!")
-                self.submit_captcha()
+                solution = self.solve_captcha()
+                logger.info('got {} from 2captcha.com'.format(solution))
+                self.submit_captcha(solution)
+            except NoSuchElementException:
+                #  sometimets the game page reloads for who knows what reason, try to re-navigate and re-submit
+                navigator.navigate(self, 'All')
+                click(self.raid_button_selector,
+                      sel_type='xpath')
+                self.submit_captcha(solution)
             except Exception as e:
-                print(e)
+                logger.error(e)
             attempts -= 1
-
 
     def add_crew_strength(self, amount):
         navigator.navigate(self, 'CrewStrength')
@@ -61,14 +74,17 @@ class PirateFortress(object):
         with open(self.captcha_filename, 'wb') as file:
             file.write(image)
 
-    def submit_captcha(self):
+    def solve_captcha(self):
         # Save captcha image
         self.save_image_to_file(self.get_captcha_png())
 
-        # First find solution from image
+        # Find solution from image
         captcha_solver = Captcha(self.captcha_filename)
         solution = captcha_solver.solve()
 
+        return solution
+
+    def submit_captcha(self, solution):
         # Fill captcha text field with found solution
         captcha_field = element('captcha')
         captcha_field.send_keys(solution)
@@ -106,5 +122,6 @@ class PirateFortressOverview(NavigateStep):
             return False
 
     def step(self):
+        Login().ensure_logged()
         click('js_cityLink')
         click(self.obj.id)

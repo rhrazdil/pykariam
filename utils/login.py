@@ -5,6 +5,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from utils.driver import Driver
+from utils.ui import is_element_present, element_text
+import logging.config
+
+
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger('PYKARIAM')
 
 
 class Login(object):
@@ -12,6 +18,7 @@ class Login(object):
         self.driver = Driver().connect()
 
     def log_in(self):
+        logger.info('Logging in.')
         # first open div containing fields for logging in
         self.driver.find_element_by_id('btn-login').click()
 
@@ -41,3 +48,16 @@ class Login(object):
             print("[ERROR] Timeout occurred while waiting for log in.")
             self.driver.save_screenshot('logging-in-err.png')
             return False
+
+    @staticmethod
+    def is_logged():
+        username_selector = '#GF_toolbar > ul > li.avatarName'
+        if is_element_present(username_selector, 'css'):
+            return element_text(username_selector, 'css') == credentials.username
+        else:
+            return False
+
+    def ensure_logged(self):
+        if not self.is_logged():
+            self.driver.get(conf.site_url)
+            self.log_in()

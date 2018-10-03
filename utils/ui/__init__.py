@@ -76,7 +76,7 @@ def main_box_header_title():
 # TODO: Always use this method for checking element presence!!! (performance)
 def is_element_present(selection, sel_type='id'):
     driver = Driver().connect()
-    driver.implicitly_wait(0)
+    driver.implicitly_wait(2)
     try:
         element(selection, sel_type)
         return True
