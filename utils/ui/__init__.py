@@ -7,6 +7,7 @@ import time
 import random
 from selenium.common.exceptions import NoSuchElementException
 
+
 def get_selector_method(sel_type):
     driver = Driver().connect()
     selector = None

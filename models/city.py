@@ -13,15 +13,21 @@ logger = logging.getLogger('PYKARIAM')
 navigator = Navigator().navigator()
 strings = Strings(language)
 
-
-class City(object):
+class Cities(object):
     def __init__(self):
-        self.name = element_text('#js_citySelectContainer > span > a', 'css').split()[1]
-        self.cities = self._get_all_cities()
+        self.cities = {}
+        self.city_names = self._get_city_names()
 
+    # TODO this is a perfect candidate to wrap with some open&close wrapper
+    @staticmethod
+    def _get_city_names():
+        click('js_citySelectContainer')
+        cities = [city.text.split()[1] for city in
+                  elements('//*[@id="dropDown_js_citySelectContainer"]/div[1]/ul/li')]
+        # cities_dict = {k:v for k, v in enumerate(cities)}
+        click('js_citySelectContainer')
+        return cities
 
-    def _get_all_cities(self):
-        return [city.text.split()[1] for city in elements('//*[@id="dropDown_js_citySelectContainer"]/div[1]/ul/li')]
 
     @staticmethod
     def _get_buildings_map():
@@ -36,8 +42,22 @@ class City(object):
         return buildings_map
 
 
+    def scan_cities(self):
+        for city_name in self.city_names:
+
+
+
+
+class City(object):
+    def __init__(self, name, buildings):
+        self.name = name # element_text('#js_citySelectContainer > span > a', 'css').split()[1]
+        self.buildings = buildings
+
+
+
+
 @navigator.register(City, 'All')
-class SafehouseOverview(NavigateStep):
+class CityOverview(NavigateStep):
     def am_i_here(self, *args, **kwargs):
         raise NotImplementedError
 
