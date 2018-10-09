@@ -20,8 +20,9 @@ driver.maximize_window()
 # navigate to the application home page and log in
 driver.get(conf.site_url)
 Login().log_in()
-pirate_fortress = PirateFortress()
-navigator.navigate(pirate_fortress, 'All')
+
+
+import IPython;IPython.embed()
 
 start = datetime.datetime.now()
 while True:

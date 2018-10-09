@@ -3,6 +3,7 @@ UI utility methods
 
 """
 from utils.driver import Driver
+from functools import wraps
 import time
 import random
 from selenium.common.exceptions import NoSuchElementException
@@ -85,3 +86,15 @@ def is_element_present(selection, sel_type='id'):
         return False
     finally:
         driver.implicitly_wait(10)
+
+
+def city_dropdown(func):
+    @wraps(func)
+    def _city_dropdown(*args, **kwargs):
+        element('js_citySelectContainer').click()
+        res = func(*args, **kwargs)
+        element('js_citySelectContainer').click()
+        return res
+    return _city_dropdown
+
+
