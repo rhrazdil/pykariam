@@ -11,3 +11,8 @@ def close_popup():
     """
     if is_element_present('multiPopup'):
         click('//*[@id="multiPopup"]/div[2]/div[2]/a', sel_type='xpath')
+
+
+def view_city():
+    if not is_element_present('js_cityBread'):
+        click('js_cityBread')

@@ -2,12 +2,14 @@ from navmazing import NavigateStep, NavigateToSibling
 from utils.ui import (click, element_fill, element, element_text,
                       is_element_present, elements, city_dropdown)
 from utils.navigator import Navigator
+from utils.ui.game import view_city
 from utils.strings import Strings
 from selenium.common.exceptions import NoSuchElementException
 from conf import language
 from utils.login import Login
 from models import Building
 from functools import wraps
+from time import sleep
 import logging.config
 
 
@@ -41,30 +43,34 @@ class Cities(object):
             buildings_map.update({name: building})
         return buildings_map
 
-    def _scan_city(self, city_name, city_index):
-        city = City(city_name, city_index)
+    def _scan_city(self, city_name):
+        city = City(city_name)
         navigator.navigate(city, 'All')
         return self._current_city_map()
 
     def scan_cities(self):
-        for city_index, city_name in self.city_names.items():
+        for _, city_name in self.city_names.items():
             self.cities.update(
-                {city_name: self._scan_city(city_name, city_index)}
+                {city_name: self._scan_city(city_name)}
             )
 
 
 class City(object):
-    def __init__(self, name, index, buildings=None):
+    def __init__(self, name, buildings=None):
         self.name = name  # element_text('#js_citySelectContainer > span > a', 'css').split()[1]
-        self.index = index
         self.buildings = buildings
 
-    def get_city_link_from_dropdown(self):
+    def click_city_name_in_dropdown(self):
         element('js_citySelectContainer').click()
+        sleep(0.1)
         city_links = elements('//*[@id="dropDown_js_citySelectContainer"]/div[1]/ul/li/a')
         for city_link in city_links:
             if city_link.text == self.name:
-                return city_link
+                city_link.click()
+                return True
+
+    def __repr__(self):
+        print(self.name)
 
 
 @navigator.register(City, 'All')
@@ -77,11 +83,5 @@ class CityOverview(NavigateStep):
 
     def step(self, *args, **kwargs):
         Login().ensure_logged()
-        click('js_cityLink')
-
-        element('js_citySelectContainer').click()
-
-        click('//*[@id="dropDown_js_citySelectContainer"]/div[1]/ul/li[{}]/a'.format(str(self.obj.index + 1)), 'xpath')
-
-        element('js_citySelectContainer').click()
-
+        view_city()
+        self.obj.click_city_name_in_dropdown()
